@@ -1,38 +1,52 @@
-import { addCube, handleCubeColorInput, removeCube } from "./cube.js";
+import { animate, init } from "./controls.js";
 import {
   handleContextMenu,
+  handleKeyDown,
+  handleKeyUp,
   handleMouseDown,
   handleMouseMove,
   handleMouseUp,
-} from "./rotation.js";
-import {
-  handleSmoothingSliderInput,
-  handleSmoothingToggleChange,
-  toggleCubeOptionsMenu,
-  toggleOptionsMenu,
-} from "./ui.js";
+} from "./events.js";
 
-const container = document.getElementById("container");
-const optionsMenu = document.getElementById("optionsMenu");
-const cubeOptionsMenu = document.getElementById("cubeOptionsMenu");
-const smoothingSlider = document.getElementById("smoothingSlider");
-const smoothingToggle = document.getElementById("smoothingToggle");
-const cubeColorInput = document.getElementById("cubeColor");
+const canvas = document.getElementById("canvas");
+const fullscreenButton = document.getElementById("fullscreenButton");
 
-document.getElementById("addCube").addEventListener("click", addCube);
-document.getElementById("removeCube").addEventListener("click", removeCube);
-document
-  .getElementById("optionsButton")
-  .addEventListener("click", toggleOptionsMenu);
-document
-  .getElementById("cubeOptionsButton")
-  .addEventListener("click", toggleCubeOptionsMenu);
-smoothingSlider.addEventListener("input", handleSmoothingSliderInput);
-smoothingToggle.addEventListener("change", handleSmoothingToggleChange);
-cubeColorInput.addEventListener("input", handleCubeColorInput);
-container.addEventListener("mousedown", handleMouseDown);
-container.addEventListener("mousemove", handleMouseMove);
-container.addEventListener("mouseup", handleMouseUp);
-container.addEventListener("contextmenu", handleContextMenu);
+fullscreenButton.addEventListener("click", () => {
+  if (canvas.requestFullscreen) {
+    canvas.requestFullscreen();
+  } else if (canvas.mozRequestFullScreen) {
+    // Firefox
+    canvas.mozRequestFullScreen();
+  } else if (canvas.webkitRequestFullscreen) {
+    // Chrome, Safari and Opera
+    canvas.webkitRequestFullscreen();
+  } else if (canvas.msRequestFullscreen) {
+    // IE/Edge
+    canvas.msRequestFullscreen();
+  }
+});
 
-export { container, cubeColorInput, cubeOptionsMenu, optionsMenu };
+canvas.addEventListener("click", () => {
+  canvas.requestPointerLock();
+});
+
+document.addEventListener("pointerlockchange", () => {
+  if (document.pointerLockElement === canvas) {
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mousedown", handleMouseDown);
+    document.addEventListener("mouseup", handleMouseUp);
+    document.addEventListener("contextmenu", handleContextMenu);
+    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keyup", handleKeyUp);
+  } else {
+    document.removeEventListener("mousemove", handleMouseMove);
+    document.removeEventListener("mousedown", handleMouseDown);
+    document.removeEventListener("mouseup", handleMouseUp);
+    document.removeEventListener("contextmenu", handleContextMenu);
+    document.removeEventListener("keydown", handleKeyDown);
+    document.removeEventListener("keyup", handleKeyUp);
+  }
+});
+
+init(canvas);
+animate();

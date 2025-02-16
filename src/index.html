@@ -5,44 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>3D Cube Interaction</title>
     <link rel="stylesheet" href="styles/styles.css" />
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/three@0.137.5/build/three.module.js"
+    ></script>
   </head>
   <body>
     <div class="header">
       <h1>3D Cube Interaction</h1>
       <p>
-        Right-click and drag to rotate the cubes. Use the buttons below to add
-        or remove cubes.
+        Use WASD to move, Space to go up, C to go down. Right-click to place a
+        cube, left-click to destroy a cube.
       </p>
+      <button id="fullscreenButton">Go Full Screen</button>
     </div>
-    <div class="container" id="container">
-      <!-- Cubes will be added here dynamically -->
-    </div>
-    <div class="controls">
-      <button id="addCube">Add Cube</button>
-      <button id="removeCube">Remove Cube</button>
-      <button id="optionsButton">Options</button>
-      <button id="cubeOptionsButton">Cube Options</button>
-    </div>
-    <div class="options" id="optionsMenu" style="display: none">
-      <label for="smoothingSlider">Smoothing:</label>
-      <input
-        type="range"
-        id="smoothingSlider"
-        min="0"
-        max="1"
-        step="0.01"
-        value="0.5"
-      />
-      <label for="smoothingToggle">Enable Smoothing:</label>
-      <input type="checkbox" id="smoothingToggle" checked />
-    </div>
-    <div class="cube-options" id="cubeOptionsMenu" style="display: none">
-      <div id="cubeList"></div>
-      <label for="cubeColor">Cube Color:</label>
-      <input type="color" id="cubeColor" value="#4caf50" />
-      <label for="selectAllCubes">Select All:</label>
-      <input type="checkbox" id="selectAllCubes" />
-    </div>
+    <canvas id="canvas"></canvas>
     <script type="module" src="scripts/app.js"></script>
   </body>
 </html>
