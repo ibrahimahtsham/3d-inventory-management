@@ -1,5 +1,9 @@
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.137.5/build/three.module.js";
 import { camera, movement, player, scene, sensitivity } from "./controls.js";
 import { addCube, removeCube } from "./cube.js";
+
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
 
 function handleMouseMove(event) {
   const deltaX = event.movementX;
@@ -14,13 +18,19 @@ function handleMouseMove(event) {
 }
 
 function handleMouseDown(event) {
-  const vector = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
-  const position = new THREE.Vector3().copy(player.position).add(vector);
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObjects(scene.children);
 
-  if (event.button === 2) {
-    addCube(scene, position);
-  } else if (event.button === 0) {
-    removeCube(scene, position);
+  if (intersects.length > 0) {
+    const intersect = intersects[0];
+    const position = intersect.point.clone().add(intersect.face.normal);
+    position.divideScalar(1).floor().multiplyScalar(1).addScalar(0.5);
+
+    if (event.button === 2) {
+      addCube(scene, position);
+    } else if (event.button === 0) {
+      removeCube(scene, intersect.object.position);
+    }
   }
 }
 

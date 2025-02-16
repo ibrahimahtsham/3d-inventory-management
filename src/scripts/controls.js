@@ -54,15 +54,6 @@ function init(canvas) {
   ground.rotation.x = -Math.PI / 2;
   scene.add(ground);
 
-  // Add some cubes
-  const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
-  const cubeMaterial = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
-  for (let i = 0; i < 10; i++) {
-    const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-    cube.position.set(Math.random() * 20 - 10, 0.5, Math.random() * 20 - 10);
-    scene.add(cube);
-  }
-
   // Event listeners
   window.addEventListener("resize", onWindowResize);
   window.addEventListener("keydown", handleEscapeKey);
