@@ -1,9 +1,17 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.137.5/build/three.module.js";
-import { camera, movement, player, scene, sensitivity } from "./controls.js";
+import {
+  camera,
+  movement,
+  placeholderCube,
+  player,
+  scene,
+  sensitivity,
+} from "./controls.js";
 import { addCube, removeCube } from "./cube.js";
 
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
+const MAX_PLACE_DISTANCE = 5; // Maximum distance from the player to place cubes
 
 function handleMouseMove(event) {
   const deltaX = event.movementX;
@@ -15,21 +23,40 @@ function handleMouseMove(event) {
     -Math.PI / 2,
     Math.min(Math.PI / 2, camera.rotation.x)
   );
+
+  // Update placeholder cube position
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObjects(scene.children, true);
+  if (intersects.length > 0) {
+    const intersect = intersects[0];
+    const position = intersect.point.clone().add(intersect.face.normal);
+    position.divideScalar(1).floor().multiplyScalar(1).addScalar(0.5);
+
+    if (position.distanceTo(player.position) <= MAX_PLACE_DISTANCE) {
+      placeholderCube.position.copy(position);
+    } else {
+      placeholderCube.position.set(0, -1000, 0); // Hide placeholder cube if out of range
+    }
+  } else {
+    placeholderCube.position.set(0, -1000, 0); // Hide placeholder cube if no intersection
+  }
 }
 
 function handleMouseDown(event) {
   raycaster.setFromCamera(mouse, camera);
-  const intersects = raycaster.intersectObjects(scene.children);
+  const intersects = raycaster.intersectObjects(scene.children, true);
 
   if (intersects.length > 0) {
     const intersect = intersects[0];
     const position = intersect.point.clone().add(intersect.face.normal);
     position.divideScalar(1).floor().multiplyScalar(1).addScalar(0.5);
 
-    if (event.button === 2) {
-      addCube(scene, position);
-    } else if (event.button === 0) {
-      removeCube(scene, intersect.object.position);
+    if (position.distanceTo(player.position) <= MAX_PLACE_DISTANCE) {
+      if (event.button === 2) {
+        addCube(scene, position);
+      } else if (event.button === 0) {
+        removeCube(scene, intersect.object.position);
+      }
     }
   }
 }

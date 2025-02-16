@@ -1,7 +1,7 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.137.5/build/three.module.js";
 
 let camera, scene, renderer;
-let player, crosshair;
+let player, crosshair, placeholderCube;
 let movement = {
   forward: false,
   backward: false,
@@ -20,6 +20,7 @@ function init(canvas) {
 
   // Scene
   scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x2e2e2e); // Dark grey background
 
   // Camera
   camera = new THREE.PerspectiveCamera(
@@ -42,14 +43,21 @@ function init(canvas) {
   crosshair.position.set(0, 0, -2);
   camera.add(crosshair);
 
+  // Placeholder Cube
+  const placeholderGeometry = new THREE.BoxGeometry(1, 1, 1);
+  const edges = new THREE.EdgesGeometry(placeholderGeometry);
+  const placeholderMaterial = new THREE.LineBasicMaterial({ color: 0x00ff00 });
+  placeholderCube = new THREE.LineSegments(edges, placeholderMaterial);
+  scene.add(placeholderCube);
+
   // Lighting
   const light = new THREE.DirectionalLight(0xffffff, 1);
   light.position.set(5, 10, 7.5);
   scene.add(light);
 
-  // Add a ground plane
+  // Add a ground plane with a light green color
   const groundGeometry = new THREE.PlaneGeometry(100, 100);
-  const groundMaterial = new THREE.MeshPhongMaterial({ color: 0x808080 });
+  const groundMaterial = new THREE.MeshPhongMaterial({ color: 0x90ee90 }); // Light green color
   const ground = new THREE.Mesh(groundGeometry, groundMaterial);
   ground.rotation.x = -Math.PI / 2;
   scene.add(ground);
@@ -93,6 +101,7 @@ export {
   init,
   movement,
   movementSpeed,
+  placeholderCube,
   player,
   renderer,
   scene,
